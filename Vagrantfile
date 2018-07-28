@@ -5,7 +5,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  os = "bento/ubuntu-16.04"
+  os = "ubuntu/xenial64"
   net_ip = "192.168.50"
 
   config.vm.define :master, primary: true do |master_config|
@@ -17,8 +17,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       master_config.vm.box = "#{os}"
       master_config.vm.host_name = 'saltmaster.local'
       master_config.vm.network "private_network", ip: "#{net_ip}.10"
-      master_config.vm.synced_folder "saltstack/salt/", "/srv/salt"
-      master_config.vm.synced_folder "saltstack/pillar/", "/srv/pillar"
+      master_config.vm.synced_folder "repo/etc/master.d/", "/etc/salt/master.d"
+      master_config.vm.synced_folder "repo/salt/", "/srv/salt"
+      master_config.vm.synced_folder "repo/pillar/", "/srv/pillar"
+      master_config.vm.synced_folder "formulas/", "/srv/salt-formulas"
 
       master_config.vm.provision :salt do |salt|
         salt.master_config = "saltstack/etc/master"

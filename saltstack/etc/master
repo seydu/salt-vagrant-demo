@@ -390,9 +390,9 @@
 #  - roots
 #
 # To use multiple backends list them in the order they are searched:
-#fileserver_backend:
-#  - git
-#  - roots
+fileserver_backend:
+  - git
+  - roots
 #
 # Uncomment the line below if you do not want the file_server to follow
 # symlinks when walking the filesystem tree. This is set to True
