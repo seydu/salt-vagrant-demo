@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :master, primary: true do |master_config|
     master_config.vm.provider "virtualbox" do |vb|
-        vb.memory = "2048"
+        vb.memory = "1024"
         vb.cpus = 1
         vb.name = "master"
     end
@@ -44,9 +44,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 
     [
-      ["minion1",    "#{net_ip}.11",    "1024",    os ],
-      ["minion2",    "#{net_ip}.12",    "1024",    os ],
-    ].each do |vmname,ip,mem,os|
+      ["minion1",    "#{net_ip}.11",    "2048",    os, true],
+      ["minion2",    "#{net_ip}.12",    "1024",    os, false ],
+    ].each do |vmname,ip,mem,os,synced_folder|
       config.vm.define "#{vmname}" do |minion_config|
         minion_config.vm.provider "virtualbox" do |vb|
             vb.memory = "#{mem}"
@@ -56,6 +56,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         minion_config.vm.box = "#{os}"
         minion_config.vm.hostname = "#{vmname}"
         minion_config.vm.network "private_network", ip: "#{ip}"
+        if synced_folder
+          minion_config.vm.synced_folder "/home/seydu/projects/#{vmname}/sources/", "/var/www/projects/salt_vhost_test/sources"
+        end
+
 
         minion_config.vm.provision :salt do |salt|
           salt.minion_config = "saltstack/etc/#{vmname}"
